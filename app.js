@@ -5,9 +5,16 @@ const Tenor = require('tenorjs').client({
   "Filter": "high",
   "Locale": "en_US",
 })
+const bodyParser = require('body-parser');
+
+// https://www.npmjs.com/package/express-sanitizer
+const expressSanitizer = require('express-sanitizer');
 
 const app = express();
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(expressSanitizer());
 
 // Middleware
 app.engine('handlebars', handlebars.engine());
@@ -25,6 +32,19 @@ app.get('/', (req, res) => {
     .then((response) => {
       const gifs = response;
       res.render('home', { gifs })
+    }).catch(console.error);
+});
+
+// EXPRESS-SANITIZER POST REQ.BODY SEARCH TERM
+app.post('/', (req, res) => {
+  term = ""
+  if (req.body.post_term) {
+    term = req.sanitize(req.body.post_term);
+  }
+  Tenor.Search.Query(term, "10")
+    .then((response) => {
+      const gifs = response;
+      res.render('home', { gifs, term })
     }).catch(console.error);
 });
 

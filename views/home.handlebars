@@ -1,11 +1,18 @@
 <h1>Search for GIFs</h1>
 <form action="/">
-  <input type="text" name="term">
+  <input type="text" name="term" placeholder="regular GET search">
   <button type="submit">Search</button>
 </form>
 
+{{!-- SANITIZED SEARCH --}}
+<form action="/" method="post">
+  <input type="text" name="post_term" placeholder="Sanitized POST Search">
+  <button type="submit">Sanitized Search</button>
+  <p>You sanitize-searched for: <strong>{{ term }}</strong> </p>
+</form>
+
 {{#each gifs}}
-  <div 
+  <div
     class="tenor-gif-embed"
     data-postid="{{this.id}}"
     data-share-method="host"
